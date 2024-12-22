@@ -1,14 +1,3 @@
-/**
-Responsive HTML Table With Pure CSS - Web Design/UI Design
-
-Code written by:
-👨🏻‍⚕️ @Coding Design (Jeet Saru)
-
-> You can do whatever you want with the code. However if you love my content, you can **SUBSCRIBED** my YouTube Channel.
-
-🌎link: www.youtube.com/codingdesign 
-*/
-
 const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
@@ -29,8 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rows.forEach(row => tableBody.appendChild(row));
 });
 
-
-// 1. Searching for specific data of HTML table
+// 1. Searching for specific data in the HTML table
 search.addEventListener('input', searchTable);
 
 function searchTable() {
@@ -40,15 +28,14 @@ function searchTable() {
 
         row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
         row.style.setProperty('--delay', i / 25 + 's');
-    })
+    });
 
     document.querySelectorAll('tbody tr:not(.hide)').forEach((visible_row, i) => {
         visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
     });
 }
 
-// 2. Sorting | Ordering data of HTML table
-
+// 2. Sorting | Ordering data in the HTML table
 table_headings.forEach((head, i) => {
     let sort_asc = true;
     head.onclick = () => {
@@ -58,15 +45,14 @@ table_headings.forEach((head, i) => {
         document.querySelectorAll('td').forEach(td => td.classList.remove('active'));
         table_rows.forEach(row => {
             row.querySelectorAll('td')[i].classList.add('active');
-        })
+        });
 
         head.classList.toggle('asc', sort_asc);
         sort_asc = head.classList.contains('asc') ? false : true;
 
         sortTable(i, sort_asc);
-    }
-})
-
+    };
+});
 
 function sortTable(column, sort_asc) {
     [...table_rows].sort((a, b) => {
@@ -74,15 +60,12 @@ function sortTable(column, sort_asc) {
             second_row = b.querySelectorAll('td')[column].textContent.toLowerCase();
 
         return sort_asc ? (first_row < second_row ? 1 : -1) : (first_row < second_row ? -1 : 1);
-    })
-        .map(sorted_row => document.querySelector('tbody').appendChild(sorted_row));
+    }).forEach(sorted_row => document.querySelector('tbody').appendChild(sorted_row));
 }
 
 // 3. Converting HTML table to PDF
-
 const pdf_btn = document.querySelector('#toPDF');
-const customers_table = document.querySelector('#customers_table');
-
+const customers_table = document.querySelector('#pointsTable');
 
 const toPDF = function (customers_table) {
     const html_code = `
@@ -91,33 +74,31 @@ const toPDF = function (customers_table) {
     <main class="table" id="customers_table">${customers_table.innerHTML}</main>`;
 
     const new_window = window.open();
-     new_window.document.write(html_code);
+    new_window.document.write(html_code);
 
     setTimeout(() => {
         new_window.print();
         new_window.close();
     }, 400);
-}
+};
 
-pdf_btn.onclick = () => {
-    toPDF(customers_table);
+if (pdf_btn) {
+    pdf_btn.onclick = () => {
+        toPDF(customers_table);
+    };
 }
 
 // 4. Converting HTML table to JSON
-
 const json_btn = document.querySelector('#toJSON');
 
 const toJSON = function (table) {
     let table_data = [],
         t_head = [],
-
         t_headings = table.querySelectorAll('th'),
         t_rows = table.querySelectorAll('tbody tr');
 
     for (let t_heading of t_headings) {
-        let actual_head = t_heading.textContent.trim().split(' ');
-
-        t_head.push(actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase());
+        t_head.push(t_heading.textContent.trim().toLowerCase());
     }
 
     t_rows.forEach(row => {
@@ -127,110 +108,88 @@ const toJSON = function (table) {
         t_cells.forEach((t_cell, cell_index) => {
             const img = t_cell.querySelector('img');
             if (img) {
-                row_object['customer image'] = decodeURIComponent(img.src);
+                row_object['image'] = decodeURIComponent(img.src);
             }
             row_object[t_head[cell_index]] = t_cell.textContent.trim();
-        })
+        });
         table_data.push(row_object);
-    })
+    });
 
     return JSON.stringify(table_data, null, 4);
-}
+};
 
-json_btn.onclick = () => {
-    const json = toJSON(customers_table);
-    downloadFile(json, 'json')
+if (json_btn) {
+    json_btn.onclick = () => {
+        const json = toJSON(customers_table);
+        downloadFile(json, 'json', 'table_data');
+    };
 }
 
 // 5. Converting HTML table to CSV File
-
 const csv_btn = document.querySelector('#toCSV');
 
 const toCSV = function (table) {
-    // Code For SIMPLE TABLE
-    // const t_rows = table.querySelectorAll('tr');
-    // return [...t_rows].map(row => {
-    //     const cells = row.querySelectorAll('th, td');
-    //     return [...cells].map(cell => cell.textContent.trim()).join(',');
-    // }).join('\n');
-
     const t_heads = table.querySelectorAll('th'),
         tbody_rows = table.querySelectorAll('tbody tr');
 
-    const headings = [...t_heads].map(head => {
-        let actual_head = head.textContent.trim().split(' ');
-        return actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase();
-    }).join(',') + ',' + 'image name';
+    const headings = [...t_heads].map(head => head.textContent.trim().toLowerCase()).join(',') + ',image';
 
     const table_data = [...tbody_rows].map(row => {
         const cells = row.querySelectorAll('td'),
-            img = decodeURIComponent(row.querySelector('img').src),
-            data_without_img = [...cells].map(cell => cell.textContent.replace(/,/g, ".").trim()).join(',');
+            img = decodeURIComponent(row.querySelector('img')?.src || ''),
+            data_without_img = [...cells].map(cell => cell.textContent.replace(/,/g, '.').trim()).join(',');
 
         return data_without_img + ',' + img;
     }).join('\n');
 
     return headings + '\n' + table_data;
+};
+
+if (csv_btn) {
+    csv_btn.onclick = () => {
+        const csv = toCSV(customers_table);
+        downloadFile(csv, 'csv', 'table_data');
+    };
 }
 
-csv_btn.onclick = () => {
-    const csv = toCSV(customers_table);
-    downloadFile(csv, 'csv', 'customer orders');
-}
-
-// 6. Converting HTML table to EXCEL File
-
+// 6. Converting HTML table to Excel File
 const excel_btn = document.querySelector('#toEXCEL');
 
 const toExcel = function (table) {
-    // Code For SIMPLE TABLE
-    // const t_rows = table.querySelectorAll('tr');
-    // return [...t_rows].map(row => {
-    //     const cells = row.querySelectorAll('th, td');
-    //     return [...cells].map(cell => cell.textContent.trim()).join('\t');
-    // }).join('\n');
-
     const t_heads = table.querySelectorAll('th'),
         tbody_rows = table.querySelectorAll('tbody tr');
 
-    const headings = [...t_heads].map(head => {
-        let actual_head = head.textContent.trim().split(' ');
-        return actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase();
-    }).join('\t') + '\t' + 'image name';
+    const headings = [...t_heads].map(head => head.textContent.trim().toLowerCase()).join('\t') + '\timage';
 
     const table_data = [...tbody_rows].map(row => {
         const cells = row.querySelectorAll('td'),
-            img = decodeURIComponent(row.querySelector('img').src),
+            img = decodeURIComponent(row.querySelector('img')?.src || ''),
             data_without_img = [...cells].map(cell => cell.textContent.trim()).join('\t');
 
         return data_without_img + '\t' + img;
     }).join('\n');
 
     return headings + '\n' + table_data;
+};
+
+if (excel_btn) {
+    excel_btn.onclick = () => {
+        const excel = toExcel(customers_table);
+        downloadFile(excel, 'excel', 'table_data');
+    };
 }
 
-excel_btn.onclick = () => {
-    const excel = toExcel(customers_table);
-    downloadFile(excel, 'excel');
-}
-
-const downloadFile = function (data, fileType, fileName = '') {
+// Download File Function
+const downloadFile = function (data, fileType, fileName = 'data') {
     const a = document.createElement('a');
     a.download = fileName;
     const mime_types = {
         'json': 'application/json',
         'csv': 'text/csv',
         'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    }
-    a.href = `
-        data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}
-    `;
+    };
+    a.href = `data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}`;
     document.body.appendChild(a);
     a.click();
     a.remove();
-}
-
-
-
-
-
+};
