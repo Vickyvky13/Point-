@@ -13,28 +13,44 @@ const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
 
-// Sort rows visually by Points without changing their IDs
-document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.querySelector('tbody');
-    const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-    // Sort rows by Points (7th column), descending order
-    const sortedRows = [...rows].sort((a, b) => {
+// Search functionality
+const search = document.querySelector('#search'),
+    table_rows = document.querySelectorAll('#team-body tr');
+
+search.addEventListener('input', () => {
+    table_rows.forEach((row, i) => {
+        let table_data = row.textContent.toLowerCase(),
+            search_data = search.value.toLowerCase();
+
+        row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
+    });
+
+    document.querySelectorAll('#team-body tr:not(.hide)').forEach((visible_row, i) => {
+        visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
+    });
+});
+
+// Sort rows visually by Points without changing IDs
+document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.querySelector('#team-body');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    // Sort rows based on Points column (7th column)
+    rows.sort((a, b) => {
         const pointsA = parseInt(a.cells[6].innerText, 10); // Points column
         const pointsB = parseInt(b.cells[6].innerText, 10);
         return pointsB - pointsA; // Descending order
     });
 
-    // Temporarily hide table body for better performance
-    tableBody.style.display = 'none';
-
-    // Rearrange rows visually without changing their IDs
-    sortedRows.forEach(row => {
-        tableBody.appendChild(row);
+    // Apply order via CSS without changing HTML structure
+    rows.forEach((row, index) => {
+        row.style.order = index; // CSS order property
     });
 
-    // Show table body again
-    tableBody.style.display = '';
+    // Ensure tbody uses flexbox for visual order effect
+    tbody.style.display = 'flex';
+    tbody.style.flexDirection = 'column';
 });
 
 
