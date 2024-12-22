@@ -212,3 +212,22 @@ const downloadFile = function (data, fileType, fileName = '') {
     a.click();
     a.remove();
 }
+
+
+// Sort table rows by Points in descending order on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.querySelector('tbody');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+        const pointsA = parseInt(a.cells[5].innerText.trim());
+        const pointsB = parseInt(b.cells[5].innerText.trim());
+        return pointsB - pointsA; // Sort in descending order
+    });
+
+    // Reorder rows in the table
+    rows.forEach((row, index) => {
+        row.cells[0].innerText = index + 1; // Update Ids based on new order
+        tableBody.appendChild(row);
+    });
+});
