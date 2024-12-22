@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Team Groups | Export Table</title>
+    <title>Team Statistics Table</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
     <main class="table" id="teams_table">
         <section class="table__header">
-            <h1>Team Groups</h1>
+            <h1>Team Statistics</h1>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data...">
+                <img src="images/search.png" alt="Search Icon">
+            </div>
             <div class="export__file">
                 <label for="export-file" class="export__file-btn" title="Export File"></label>
                 <input type="checkbox" id="export-file">
@@ -25,49 +29,74 @@
                 </div>
             </div>
         </section>
-
         <section class="table__body">
             <table>
                 <thead>
                     <tr>
-                        <th>Group</th>
-                        <th>Team</th>
-                        <th>Location</th>
-                        <th>Status</th>
+                        <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Team <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Match <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Wins <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Loss <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Points <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Number <span class="icon-arrow">&UpArrow;</span></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Group A -->
-                    <tr><td>Group A</td><td>Team 1</td><td>New York</td><td>Qualified</td></tr>
-                    <tr><td>Group A</td><td>Team 2</td><td>London</td><td>Qualified</td></tr>
-                    <tr><td>Group A</td><td>Team 3</td><td>Tokyo</td><td>Qualified</td></tr>
-                    <tr><td>Group A</td><td>Team 4</td><td>Paris</td><td>Qualified</td></tr>
-                    <tr><td>Group A</td><td>Team 5</td><td>Berlin</td><td>Qualified</td></tr>
-                    <tr><td>Group A</td><td>Team 6</td><td>Sydney</td><td>Qualified</td></tr>
-
-                    <!-- Group B -->
-                    <tr><td>Group B</td><td>Team 7</td><td>Seoul</td><td>Qualified</td></tr>
-                    <tr><td>Group B</td><td>Team 8</td><td>Madrid</td><td>Qualified</td></tr>
-                    <tr><td>Group B</td><td>Team 9</td><td>Rome</td><td>Qualified</td></tr>
-                    <tr><td>Group B</td><td>Team 10</td><td>Dubai</td><td>Qualified</td></tr>
-                    <tr><td>Group B</td><td>Team 11</td><td>Mumbai</td><td>Qualified</td></tr>
-                    <tr><td>Group B</td><td>Team 12</td><td>Cape Town</td><td>Qualified</td></tr>
-
-                    <!-- Group C -->
-                    <tr><td>Group C</td><td>Team 13</td><td>Hong Kong</td><td>Qualified</td></tr>
-                    <tr><td>Group C</td><td>Team 14</td><td>Bangkok</td><td>Qualified</td></tr>
-                    <tr><td>Group C</td><td>Team 15</td><td>Sydney</td><td>Qualified</td></tr>
-                    <tr><td>Group C</td><td>Team 16</td><td>Singapore</td><td>Qualified</td></tr>
-                    <tr><td>Group C</td><td>Team 17</td><td>Toronto</td><td>Qualified</td></tr>
-                    <tr><td>Group C</td><td>Team 18</td><td>Mexico City</td><td>Qualified</td></tr>
-
-                    <!-- Group D -->
-                    <tr><td>Group D</td><td>Team 19</td><td>Los Angeles</td><td>Qualified</td></tr>
-                    <tr><td>Group D</td><td>Team 20</td><td>San Francisco</td><td>Qualified</td></tr>
-                    <tr><td>Group D</td><td>Team 21</td><td>Rio de Janeiro</td><td>Qualified</td></tr>
-                    <tr><td>Group D</td><td>Team 22</td><td>Buenos Aires</td><td>Qualified</td></tr>
-                    <tr><td>Group D</td><td>Team 23</td><td>Moscow</td><td>Qualified</td></tr>
-                    <tr><td>Group D</td><td>Team 24</td><td>Cairo</td><td>Qualified</td></tr>
+                    <tr>
+                        <td> 1 </td>
+                        <td><img src="images/team1.png" alt=""> Team A</td>
+                        <td> 10 </td>
+                        <td> 8 </td>
+                        <td> 2 </td>
+                        <td> 24 </td>
+                        <td> #001 </td>
+                    </tr>
+                    <tr>
+                        <td> 2 </td>
+                        <td><img src="images/team2.png" alt=""> Team B</td>
+                        <td> 12 </td>
+                        <td> 9 </td>
+                        <td> 3 </td>
+                        <td> 27 </td>
+                        <td> #002 </td>
+                    </tr>
+                    <tr>
+                        <td> 3 </td>
+                        <td><img src="images/team3.png" alt=""> Team C</td>
+                        <td> 11 </td>
+                        <td> 7 </td>
+                        <td> 4 </td>
+                        <td> 21 </td>
+                        <td> #003 </td>
+                    </tr>
+                    <tr>
+                        <td> 4 </td>
+                        <td><img src="images/team4.png" alt=""> Team D</td>
+                        <td> 9 </td>
+                        <td> 6 </td>
+                        <td> 3 </td>
+                        <td> 18 </td>
+                        <td> #004 </td>
+                    </tr>
+                    <tr>
+                        <td> 5 </td>
+                        <td><img src="images/team5.png" alt=""> Team E</td>
+                        <td> 13 </td>
+                        <td> 10 </td>
+                        <td> 3 </td>
+                        <td> 30 </td>
+                        <td> #005 </td>
+                    </tr>
+                    <tr>
+                        <td> 6 </td>
+                        <td><img src="images/team6.png" alt=""> Team F</td>
+                        <td> 8 </td>
+                        <td> 5 </td>
+                        <td> 3 </td>
+                        <td> 15 </td>
+                        <td> #006 </td>
+                    </tr>
                 </tbody>
             </table>
         </section>
