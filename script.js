@@ -13,44 +13,20 @@ const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
 
-
-// Search functionality
-const search = document.querySelector('#search'),
-    table_rows = document.querySelectorAll('#team-body tr');
-
-search.addEventListener('input', () => {
-    table_rows.forEach((row, i) => {
-        let table_data = row.textContent.toLowerCase(),
-            search_data = search.value.toLowerCase();
-
-        row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
-    });
-
-    document.querySelectorAll('#team-body tr:not(.hide)').forEach((visible_row, i) => {
-        visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
-    });
-});
-
-// Sort rows visually by Points without changing IDs
+// Sort table by Points in descending order on page load
 document.addEventListener('DOMContentLoaded', () => {
-    const tbody = document.querySelector('#team-body');
-    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const tableBody = document.querySelector('tbody');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-    // Sort rows based on Points column (7th column)
     rows.sort((a, b) => {
         const pointsA = parseInt(a.cells[6].innerText, 10); // Points column
         const pointsB = parseInt(b.cells[6].innerText, 10);
         return pointsB - pointsA; // Descending order
     });
 
-    // Apply order via CSS without changing HTML structure
-    rows.forEach((row, index) => {
-        row.style.order = index; // CSS order property
-    });
-
-    // Ensure tbody uses flexbox for visual order effect
-    tbody.style.display = 'flex';
-    tbody.style.flexDirection = 'column';
+    // Clear and re-add sorted rows
+    tableBody.innerHTML = '';
+    rows.forEach(row => tableBody.appendChild(row));
 });
 
 
@@ -253,7 +229,6 @@ const downloadFile = function (data, fileType, fileName = '') {
     a.click();
     a.remove();
 }
-
 
 
 
