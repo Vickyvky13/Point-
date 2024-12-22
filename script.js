@@ -218,18 +218,3 @@ const downloadFile = function (data, fileType, fileName = '') {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('team-body');
-    const rows = Array.from(tableBody.querySelectorAll('tr'));
-
-    // Sort rows based on the Points column (7th column, index 6)
-    rows.sort((a, b) => {
-        const pointsA = parseInt(a.cells[6].innerText, 10);
-        const pointsB = parseInt(b.cells[6].innerText, 10);
-        return pointsB - pointsA; // Descending order
-    });
-
-    // Clear and re-add sorted rows
-    tableBody.innerHTML = '';
-    rows.forEach(row => tableBody.appendChild(row));
-});
