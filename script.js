@@ -13,20 +13,28 @@ const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
 
-// Sort table by Points in descending order on page load
+// Sort rows visually by Points without changing their IDs
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.querySelector('tbody');
     const rows = Array.from(tableBody.querySelectorAll('tr'));
 
-    rows.sort((a, b) => {
+    // Sort rows by Points (7th column), descending order
+    const sortedRows = [...rows].sort((a, b) => {
         const pointsA = parseInt(a.cells[6].innerText, 10); // Points column
         const pointsB = parseInt(b.cells[6].innerText, 10);
         return pointsB - pointsA; // Descending order
     });
 
-    // Clear and re-add sorted rows
-    tableBody.innerHTML = '';
-    rows.forEach(row => tableBody.appendChild(row));
+    // Temporarily hide table body for better performance
+    tableBody.style.display = 'none';
+
+    // Rearrange rows visually without changing their IDs
+    sortedRows.forEach(row => {
+        tableBody.appendChild(row);
+    });
+
+    // Show table body again
+    tableBody.style.display = '';
 });
 
 
