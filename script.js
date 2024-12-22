@@ -214,20 +214,23 @@ const downloadFile = function (data, fileType, fileName = '') {
 }
 
 
-// Sort table rows by Points in descending order on page load
-document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.querySelector('tbody');
-    const rows = Array.from(tableBody.querySelectorAll('tr'));
+document.addEventListener("DOMContentLoaded", () => {
+    const tableBody = document.getElementById("team-body");
 
-    rows.sort((a, b) => {
-        const pointsA = parseInt(a.cells[5].innerText.trim());
-        const pointsB = parseInt(b.cells[5].innerText.trim());
-        return pointsB - pointsA; // Sort in descending order
-    });
+    // Function to sort table rows based on points (Column 7)
+    function sortTableByPoints() {
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
 
-    // Reorder rows in the table
-    rows.forEach((row, index) => {
-        row.cells[0].innerText = index + 1; // Update Ids based on new order
-        tableBody.appendChild(row);
-    });
+        rows.sort((a, b) => {
+            const pointsA = parseInt(a.children[6].textContent.trim());
+            const pointsB = parseInt(b.children[6].textContent.trim());
+            return pointsB - pointsA; // Descending order
+        });
+
+        // Append sorted rows back to the table body
+        rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    // Initial sort when the page loads
+    sortTableByPoints();
 });
