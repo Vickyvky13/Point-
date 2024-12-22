@@ -13,6 +13,23 @@ const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
 
+// Sort table by Points in descending order on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.querySelector('tbody');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+        const pointsA = parseInt(a.cells[6].innerText, 10); // Points column
+        const pointsB = parseInt(b.cells[6].innerText, 10);
+        return pointsB - pointsA; // Descending order
+    });
+
+    // Clear and re-add sorted rows
+    tableBody.innerHTML = '';
+    rows.forEach(row => tableBody.appendChild(row));
+});
+
+
 // 1. Searching for specific data of HTML table
 search.addEventListener('input', searchTable);
 
