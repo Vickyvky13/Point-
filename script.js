@@ -227,8 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return pointsB - pointsA; // Descending order
         });
 
-        // Append sorted rows back to the table body
-        rows.forEach(row => tableBody.appendChild(row));
+        // Append sorted rows back to the table body and update IDs
+        rows.forEach((row, index) => {
+            row.children[0].textContent = index + 1; // Update ID column
+            tableBody.appendChild(row);
+        });
     }
 
     // Initial sort when the page loads
