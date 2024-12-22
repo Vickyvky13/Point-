@@ -1,195 +1,48 @@
-const search = document.querySelector('.input-group input'),
-    table_rows = document.querySelectorAll('tbody tr'),
-    table_headings = document.querySelectorAll('thead th');
+const search = document.querySelector('#search');
+const table_rows = document.querySelectorAll('tbody tr');
+const table_headings = document.querySelectorAll('thead th');
 
-// Sort table by Points in descending order on page load
+// Ensure IDs remain sequential
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.querySelector('tbody');
     const rows = Array.from(tableBody.querySelectorAll('tr'));
 
     rows.sort((a, b) => {
-        const pointsA = parseInt(a.cells[6].innerText, 10); // Points column
-        const pointsB = parseInt(b.cells[6].innerText, 10);
-        return pointsB - pointsA; // Descending order
+        return parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex);
     });
 
-    // Clear and re-add sorted rows
-    tableBody.innerHTML = '';
-    rows.forEach(row => tableBody.appendChild(row));
+    rows.forEach((row, index) => {
+        row.cells[0].innerText = index + 1; // Set sequential IDs (1,2,3...)
+        tableBody.appendChild(row);
+    });
 });
 
-// 1. Searching for specific data in the HTML table
-search.addEventListener('input', searchTable);
-
-function searchTable() {
+// Search functionality
+search.addEventListener('input', () => {
     table_rows.forEach((row, i) => {
         let table_data = row.textContent.toLowerCase(),
             search_data = search.value.toLowerCase();
 
         row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
-        row.style.setProperty('--delay', i / 25 + 's');
     });
+});
 
-    document.querySelectorAll('tbody tr:not(.hide)').forEach((visible_row, i) => {
-        visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
-    });
-}
-
-// 2. Sorting | Ordering data in the HTML table
+// Sorting functionality
 table_headings.forEach((head, i) => {
     let sort_asc = true;
     head.onclick = () => {
-        table_headings.forEach(head => head.classList.remove('active'));
+        table_headings.forEach(h => h.classList.remove('active'));
         head.classList.add('active');
 
-        document.querySelectorAll('td').forEach(td => td.classList.remove('active'));
-        table_rows.forEach(row => {
-            row.querySelectorAll('td')[i].classList.add('active');
+        const sortedRows = Array.from(table_rows).sort((a, b) => {
+            let first = a.cells[i].innerText.toLowerCase(),
+                second = b.cells[i].innerText.toLowerCase();
+            return sort_asc ? first.localeCompare(second) : second.localeCompare(first);
         });
 
-        head.classList.toggle('asc', sort_asc);
-        sort_asc = head.classList.contains('asc') ? false : true;
-
-        sortTable(i, sort_asc);
+        sort_asc = !sort_asc;
+        const tbody = document.querySelector('tbody');
+        tbody.innerHTML = '';
+        sortedRows.forEach(row => tbody.appendChild(row));
     };
 });
-
-function sortTable(column, sort_asc) {
-    [...table_rows].sort((a, b) => {
-        let first_row = a.querySelectorAll('td')[column].textContent.toLowerCase(),
-            second_row = b.querySelectorAll('td')[column].textContent.toLowerCase();
-
-        return sort_asc ? (first_row < second_row ? 1 : -1) : (first_row < second_row ? -1 : 1);
-    }).forEach(sorted_row => document.querySelector('tbody').appendChild(sorted_row));
-}
-
-// 3. Converting HTML table to PDF
-const pdf_btn = document.querySelector('#toPDF');
-const customers_table = document.querySelector('#pointsTable');
-
-const toPDF = function (customers_table) {
-    const html_code = `
-    <!DOCTYPE html>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <main class="table" id="customers_table">${customers_table.innerHTML}</main>`;
-
-    const new_window = window.open();
-    new_window.document.write(html_code);
-
-    setTimeout(() => {
-        new_window.print();
-        new_window.close();
-    }, 400);
-};
-
-if (pdf_btn) {
-    pdf_btn.onclick = () => {
-        toPDF(customers_table);
-    };
-}
-
-// 4. Converting HTML table to JSON
-const json_btn = document.querySelector('#toJSON');
-
-const toJSON = function (table) {
-    let table_data = [],
-        t_head = [],
-        t_headings = table.querySelectorAll('th'),
-        t_rows = table.querySelectorAll('tbody tr');
-
-    for (let t_heading of t_headings) {
-        t_head.push(t_heading.textContent.trim().toLowerCase());
-    }
-
-    t_rows.forEach(row => {
-        const row_object = {},
-            t_cells = row.querySelectorAll('td');
-
-        t_cells.forEach((t_cell, cell_index) => {
-            const img = t_cell.querySelector('img');
-            if (img) {
-                row_object['image'] = decodeURIComponent(img.src);
-            }
-            row_object[t_head[cell_index]] = t_cell.textContent.trim();
-        });
-        table_data.push(row_object);
-    });
-
-    return JSON.stringify(table_data, null, 4);
-};
-
-if (json_btn) {
-    json_btn.onclick = () => {
-        const json = toJSON(customers_table);
-        downloadFile(json, 'json', 'table_data');
-    };
-}
-
-// 5. Converting HTML table to CSV File
-const csv_btn = document.querySelector('#toCSV');
-
-const toCSV = function (table) {
-    const t_heads = table.querySelectorAll('th'),
-        tbody_rows = table.querySelectorAll('tbody tr');
-
-    const headings = [...t_heads].map(head => head.textContent.trim().toLowerCase()).join(',') + ',image';
-
-    const table_data = [...tbody_rows].map(row => {
-        const cells = row.querySelectorAll('td'),
-            img = decodeURIComponent(row.querySelector('img')?.src || ''),
-            data_without_img = [...cells].map(cell => cell.textContent.replace(/,/g, '.').trim()).join(',');
-
-        return data_without_img + ',' + img;
-    }).join('\n');
-
-    return headings + '\n' + table_data;
-};
-
-if (csv_btn) {
-    csv_btn.onclick = () => {
-        const csv = toCSV(customers_table);
-        downloadFile(csv, 'csv', 'table_data');
-    };
-}
-
-// 6. Converting HTML table to Excel File
-const excel_btn = document.querySelector('#toEXCEL');
-
-const toExcel = function (table) {
-    const t_heads = table.querySelectorAll('th'),
-        tbody_rows = table.querySelectorAll('tbody tr');
-
-    const headings = [...t_heads].map(head => head.textContent.trim().toLowerCase()).join('\t') + '\timage';
-
-    const table_data = [...tbody_rows].map(row => {
-        const cells = row.querySelectorAll('td'),
-            img = decodeURIComponent(row.querySelector('img')?.src || ''),
-            data_without_img = [...cells].map(cell => cell.textContent.trim()).join('\t');
-
-        return data_without_img + '\t' + img;
-    }).join('\n');
-
-    return headings + '\n' + table_data;
-};
-
-if (excel_btn) {
-    excel_btn.onclick = () => {
-        const excel = toExcel(customers_table);
-        downloadFile(excel, 'excel', 'table_data');
-    };
-}
-
-// Download File Function
-const downloadFile = function (data, fileType, fileName = 'data') {
-    const a = document.createElement('a');
-    a.download = fileName;
-    const mime_types = {
-        'json': 'application/json',
-        'csv': 'text/csv',
-        'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    };
-    a.href = `data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-};
